@@ -1,176 +1,646 @@
 {
-  "title": "Audio Measurements",
-  "uid": "audio-measurements",
-  "schemaVersion": 38,
-  "version": 1,
-  "refresh": "5s",
-  "time": { "from": "now-1h", "to": "now" },
-  "timezone": "browser",
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "links": [],
   "panels": [
     {
-      "id": 1,
-      "title": "RMS Level (dBFS)",
-      "type": "timeseries",
-      "gridPos": { "x": 0, "y": 0, "w": 12, "h": 8 },
-      "datasource": { "type": "postgres", "uid": "postgres-ds" },
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "postgres-ds"
+      },
       "fieldConfig": {
         "defaults": {
-          "unit": "dB",
-          "custom": { "lineWidth": 2, "fillOpacity": 10 }
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "mappings": []
         },
         "overrides": []
       },
-      "options": {
-        "tooltip": { "mode": "single" },
-        "legend": { "displayMode": "list", "calcs": ["last", "min", "max"] }
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 0
       },
+      "id": 7,
+      "options": {
+        "displayLabels": [
+          "percent"
+        ],
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "pieType": "donut",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "10.4.0",
       "targets": [
         {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "postgres-ds"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT count(*) AS \"Total Successes\" \r\nFROM measurements \r\nWHERE passed_baseline = true;",
           "refId": "A",
-          "datasource": { "type": "postgres", "uid": "postgres-ds" },
-          "format": "time_series",
-          "rawSql": "SELECT recorded_at AS time, rms_db AS \"RMS (dBFS)\" FROM measurements WHERE $__timeFilter(recorded_at) ORDER BY recorded_at"
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
         }
-      ]
+      ],
+      "title": "Panel Title",
+      "type": "piechart"
     },
     {
+      "datasource": {
+        "type": "postgres",
+        "uid": "postgres-ds"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "hertz"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 0
+      },
       "id": 2,
+      "options": {
+        "legend": {
+          "calcs": [
+            "last",
+            "min",
+            "max"
+          ],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "postgres-ds"
+          },
+          "format": "time_series",
+          "rawSql": "SELECT recorded_at AS time, peak_frequency_hz AS \"Peak Frequency (Hz)\" FROM measurements WHERE $__timeFilter(recorded_at) ORDER BY recorded_at",
+          "refId": "A"
+        }
+      ],
       "title": "Peak Frequency (Hz)",
-      "type": "timeseries",
-      "gridPos": { "x": 12, "y": 0, "w": 12, "h": 8 },
-      "datasource": { "type": "postgres", "uid": "postgres-ds" },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "hertz",
-          "custom": { "lineWidth": 2, "fillOpacity": 10 }
-        },
-        "overrides": []
-      },
-      "options": {
-        "tooltip": { "mode": "single" },
-        "legend": { "displayMode": "list", "calcs": ["last", "min", "max"] }
-      },
-      "targets": [
-        {
-          "refId": "A",
-          "datasource": { "type": "postgres", "uid": "postgres-ds" },
-          "format": "time_series",
-          "rawSql": "SELECT recorded_at AS time, peak_frequency_hz AS \"Peak Frequency (Hz)\" FROM measurements WHERE $__timeFilter(recorded_at) ORDER BY recorded_at"
-        }
-      ]
+      "type": "timeseries"
     },
     {
-      "id": 3,
-      "title": "Baseline Delta (dB)",
-      "type": "timeseries",
-      "gridPos": { "x": 0, "y": 8, "w": 12, "h": 8 },
-      "datasource": { "type": "postgres", "uid": "postgres-ds" },
+      "datasource": {
+        "type": "postgres",
+        "uid": "postgres-ds"
+      },
       "fieldConfig": {
         "defaults": {
-          "unit": "dB",
-          "custom": { "lineWidth": 2, "fillOpacity": 10 },
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              { "color": "green", "value": null },
-              { "color": "red",   "value": 6 }
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
             ]
-          }
+          },
+          "unit": "dB"
         },
         "overrides": []
       },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 8
+      },
+      "id": 1,
       "options": {
-        "tooltip": { "mode": "single" },
-        "legend": { "displayMode": "list", "calcs": ["last"] }
+        "legend": {
+          "calcs": [
+            "last",
+            "min",
+            "max"
+          ],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
       },
       "targets": [
         {
-          "refId": "A",
-          "datasource": { "type": "postgres", "uid": "postgres-ds" },
+          "datasource": {
+            "type": "postgres",
+            "uid": "postgres-ds"
+          },
           "format": "time_series",
-          "rawSql": "SELECT recorded_at AS time, baseline_delta_db AS \"Delta (dB)\" FROM measurements WHERE $__timeFilter(recorded_at) ORDER BY recorded_at"
+          "rawSql": "SELECT recorded_at AS time, rms_db AS \"RMS (dBFS)\" FROM measurements WHERE $__timeFilter(recorded_at) ORDER BY recorded_at",
+          "refId": "A"
         }
-      ]
+      ],
+      "title": "RMS Level (dBFS)",
+      "type": "timeseries"
     },
     {
+      "datasource": {
+        "type": "postgres",
+        "uid": "postgres-ds"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [],
+          "max": 1,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 0.7
+              },
+              {
+                "color": "green",
+                "value": 0.9
+              }
+            ]
+          },
+          "unit": "percentunit"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 12,
+        "y": 8
+      },
       "id": 4,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "10.4.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "postgres-ds"
+          },
+          "format": "table",
+          "rawSql": "SELECT ROUND(SUM(CASE WHEN passed_baseline THEN 1 ELSE 0 END)::numeric / NULLIF(COUNT(*),0), 2) AS \"Pass Rate\" FROM measurements WHERE $__timeFilter(recorded_at)",
+          "refId": "A"
+        }
+      ],
       "title": "Pass Rate",
-      "type": "stat",
-      "gridPos": { "x": 12, "y": 8, "w": 6, "h": 4 },
-      "datasource": { "type": "postgres", "uid": "postgres-ds" },
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "postgres-ds"
+      },
       "fieldConfig": {
         "defaults": {
-          "unit": "percentunit",
+          "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              { "color": "red",    "value": null },
-              { "color": "yellow", "value": 0.7 },
-              { "color": "green",  "value": 0.9 }
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
             ]
           }
         },
         "overrides": []
       },
-      "options": { "colorMode": "background", "graphMode": "none", "reduceOptions": { "calcs": ["lastNotNull"] } },
-      "targets": [
-        {
-          "refId": "A",
-          "datasource": { "type": "postgres", "uid": "postgres-ds" },
-          "format": "table",
-          "rawSql": "SELECT ROUND(SUM(CASE WHEN passed_baseline THEN 1 ELSE 0 END)::numeric / NULLIF(COUNT(*),0), 2) AS \"Pass Rate\" FROM measurements WHERE $__timeFilter(recorded_at)"
-        }
-      ]
-    },
-    {
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 18,
+        "y": 8
+      },
       "id": 5,
-      "title": "Total Recordings",
-      "type": "stat",
-      "gridPos": { "x": 18, "y": 8, "w": 6, "h": 4 },
-      "datasource": { "type": "postgres", "uid": "postgres-ds" },
-      "fieldConfig": { "defaults": {}, "overrides": [] },
-      "options": { "colorMode": "value", "graphMode": "area", "reduceOptions": { "calcs": ["lastNotNull"] } },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "10.4.0",
       "targets": [
         {
-          "refId": "A",
-          "datasource": { "type": "postgres", "uid": "postgres-ds" },
+          "datasource": {
+            "type": "postgres",
+            "uid": "postgres-ds"
+          },
           "format": "table",
-          "rawSql": "SELECT COUNT(*) AS \"Total Recordings\" FROM measurements WHERE $__timeFilter(recorded_at)"
+          "rawSql": "SELECT COUNT(*) AS \"Total Recordings\" FROM measurements WHERE $__timeFilter(recorded_at)",
+          "refId": "A"
         }
-      ]
+      ],
+      "title": "Total Recordings",
+      "type": "stat"
     },
     {
-      "id": 6,
-      "title": "Recent Recordings",
-      "type": "table",
-      "gridPos": { "x": 0, "y": 16, "w": 24, "h": 8 },
-      "datasource": { "type": "postgres", "uid": "postgres-ds" },
+      "datasource": {
+        "type": "postgres",
+        "uid": "postgres-ds"
+      },
       "fieldConfig": {
-        "defaults": {},
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 6
+              }
+            ]
+          },
+          "unit": "dB"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 16
+      },
+      "id": 3,
+      "options": {
+        "legend": {
+          "calcs": [
+            "last"
+          ],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "postgres-ds"
+          },
+          "format": "time_series",
+          "rawSql": "SELECT recorded_at AS time, baseline_delta_db AS \"Delta (dB)\" FROM measurements WHERE $__timeFilter(recorded_at) ORDER BY recorded_at",
+          "refId": "A"
+        }
+      ],
+      "title": "Baseline Delta (dB)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "postgres-ds"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
         "overrides": [
           {
-            "matcher": { "id": "byName", "options": "rms_db" },
-            "properties": [{ "id": "unit", "value": "dB" }]
+            "matcher": {
+              "id": "byName",
+              "options": "rms_db"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "dB"
+              }
+            ]
           },
           {
-            "matcher": { "id": "byName", "options": "peak_frequency_hz" },
-            "properties": [{ "id": "unit", "value": "hertz" }]
+            "matcher": {
+              "id": "byName",
+              "options": "peak_frequency_hz"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "hertz"
+              }
+            ]
           },
           {
-            "matcher": { "id": "byName", "options": "baseline_delta_db" },
-            "properties": [{ "id": "unit", "value": "dB" }]
+            "matcher": {
+              "id": "byName",
+              "options": "baseline_delta_db"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "dB"
+              }
+            ]
           }
         ]
       },
-      "options": { "cellHeight": "sm", "footer": { "show": false }, "showHeader": true },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 24
+      },
+      "id": 6,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "10.4.0",
       "targets": [
         {
-          "refId": "A",
-          "datasource": { "type": "postgres", "uid": "postgres-ds" },
+          "datasource": {
+            "type": "postgres",
+            "uid": "postgres-ds"
+          },
           "format": "table",
-          "rawSql": "SELECT recorded_at, filename, rms_db, peak_frequency_hz, baseline_delta_db, passed_baseline FROM measurements ORDER BY recorded_at DESC LIMIT 20"
+          "rawSql": "SELECT recorded_at, filename, rms_db, peak_frequency_hz, baseline_delta_db, passed_baseline FROM measurements ORDER BY recorded_at DESC LIMIT 20",
+          "refId": "A"
         }
-      ]
+      ],
+      "title": "Recent Recordings",
+      "type": "table"
     }
-  ]
+  ],
+  "refresh": "5s",
+  "schemaVersion": 39,
+  "tags": [],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-24h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "Audio Measurements",
+  "uid": "audio-measurements",
+  "version": 1,
+  "weekStart": ""
 }
